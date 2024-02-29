@@ -1,1 +1,35 @@
 Explain the code execution based on the order of the messages logged in src/quiz/promise-2darray.txt.
+
+Order of the message:
+"Sum called ... " 
+"returning from sum"
+"Sum called ... " 
+"rejecting ... " 
+"returning from sum"
+"resolving ... "
+"Result: 45" or "Error: BAD INPUT: Expected array as input" 
+
+1. Initial Call to sum2DArray with a 2D Array: The function is invoked with a valid 2D array. 
+The first thing that happens is the execution of the synchronous part of the sum2DArray function.
+"Sum called ... " is logged, indicating the start of the function execution.
+
+2. Asynchronous Operation: The setTimeout function is used to simulate asynchronous behavior, 
+even with a delay of 0. 
+This means the sum calculation and the resolve or reject inside the setTimeout callback are placed in the Web API environment, 
+and then in the JavaScript event queue to be executed later, after all synchronous code has finished executing.
+"returning from sum" is logged next for the first call, indicating that the control has moved out of the sum2DArray function, even though the promise has not yet been resolved or rejected.
+
+3. Initial Call to sum2DArray with an Incorrect Input: The function is called again, 
+this time with an incorrect input ('array2D' string). The synchronous part of the function executes.
+"Sum called ... " is logged again, showing that the function has started executing for the second time.
+
+4. Rejection of the Promise for Incorrect Input: Since the input is not an array, the promise is immediately rejected.
+"rejecting ... " is logged, indicating the promise rejection due to bad input.
+"returning from sum" is logged next for the second call, indicating that the execution for this call has also reached its synchronous end.
+
+5. Asynchronous Resolution of the First Call: After all synchronous code has been executed, the JavaScript event loop checks the event queue. The callback from the first setTimeout (which was deferred) is now executed.
+"resolving ... " is logged, indicating that the promise from the first call is being resolved with the sum of the array elements.
+
+6. Promise Handling with .then() and .catch(): For the first call (with a valid 2D array), since the promise is resolved, the .then() method's callback function is executed, 
+logging "Result: 45", which is the sum of the numbers in the provided 2D array.
+For the second call (with the incorrect input), since the promise is rejected, the .catch() method's callback function is executed, logging "Error: BAD INPUT: Expected array as input".
